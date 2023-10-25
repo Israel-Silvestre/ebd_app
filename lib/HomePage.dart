@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ebd_app/Fragments/perguntas.dart';
 import 'package:ebd_app/Fragments/part_video.dart';
+import 'package:ebd_app/Fragments/part_texto.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _pages = [
     Perguntas(), // Seu fragmento de perguntas
     Video(), // Página 2 - Adicione o conteúdo conforme necessário
-    Container(), // Página 3 - Adicione o conteúdo conforme necessário
+    Texto(), // Página 3 - Adicione o conteúdo conforme necessário
   ];
 
   late List<bool> _isSelected;
@@ -38,7 +39,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.blue,
         iconTheme: IconThemeData(color: Colors.white),
       ),
-      body: _pages[_selectedIndex], // Mostra a página correspondente à opção selecionada
+      body: _pages[
+          _selectedIndex], // Mostra a página correspondente à opção selecionada
       backgroundColor: Colors.white, // Cor de fundo do corpo do Scaffold
       bottomNavigationBar: Container(
         height: 50, // Altura da BottomNavigationBar reduzida para 50
@@ -68,7 +70,8 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(IconData(iconCode, fontFamily: 'MaterialIcons'), color: Colors.white, size: 30),
+          Icon(IconData(iconCode, fontFamily: 'MaterialIcons'),
+              color: Colors.white, size: 30),
           AnimatedContainer(
             duration: Duration(milliseconds: 300),
             curve: Curves.easeIn,
