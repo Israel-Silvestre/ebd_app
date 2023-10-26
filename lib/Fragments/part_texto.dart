@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../GoogleApis/Gsheets_api.dart';
 
 class Texto extends StatefulWidget {
   @override
@@ -15,72 +16,72 @@ class _TextoState extends State<Texto> {
   ];
 
   final List<String> igrejas = [
-    'Senhoras',
-    'Jovens',
-    'Crianças',
-    'Intermediarios',
-    'Adolescentes',
+    'Santarém',
+    'Cidade das Rosas',
+    'Santa Tereza',
+    'Macau',
+    'Nova Cruz',
+    'Satélite',
+    'Extremoz',
+    'Goianinha',
+    'São José de Mipibu',
+    'Igapó',
+    'Ponta Negra',
+    'Ceará Mirim',
+    'Montanhas',
+    'Nova Natal',
+    'Parnamirim',
+    'Pajuçara',
+    'Monte Alegre',
+    'Alvorada',
+    'Mirassol',
+    'Village das Dunas',
+    'Mossoró',
+    'Uruaçu',
+    'Acari',
+    'Nova Parnamirim',
+    'Alecrim',
+    'Caicó',
+    "Lagoa D'anta",
   ];
 
-  String? _selectedFuncao;
   String? _selectedClasse;
   String? _selectedIgreja;
   String text = '';
-
-  TextEditingController _textEditingController = TextEditingController();
-  bool isItalic = false;
-  bool isUnderlined = false;
-  bool isBold = false;
-
-  void _toggleItalic() {
-    setState(() {
-      isItalic = !isItalic;
-    });
-  }
-
-  void _toggleUnderline() {
-    setState(() {
-      isUnderlined = !isUnderlined;
-    });
-  }
-
-  void _toggleBold() {
-    setState(() {
-      isBold = !isBold;
-    });
-  }
+  String nome = '';
+  String cpf = '';
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = TextStyle(
-      fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
-      decoration: isUnderlined ? TextDecoration.underline : TextDecoration.none,
-      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-    );
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  nome = value;
+                },
+                decoration: const InputDecoration(
                   labelText: 'Nome',
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
-                decoration: InputDecoration(
+                onChanged: (value) {
+                  cpf = value;
+                },
+                decoration: const InputDecoration(
                   labelText: 'CPF',
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _selectedClasse,
-                hint: Text('Classe'),
+                hint: const Text('Classe'),
                 items: classes.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -93,10 +94,10 @@ class _TextoState extends State<Texto> {
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               DropdownButtonFormField<String>(
                 value: _selectedIgreja,
-                hint: Text('Igreja'),
+                hint: const Text('Igreja'),
                 items: igrejas.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -109,77 +110,64 @@ class _TextoState extends State<Texto> {
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                padding: EdgeInsets.all(16.0),
-                margin: EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.format_italic),
-                            onPressed: _toggleItalic,
-                            color: isItalic ? Colors.blue : null,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.format_underline),
-                            onPressed: _toggleUnderline,
-                            color: isUnderlined ? Colors.blue : null,
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.format_bold),
-                            onPressed: _toggleBold,
-                            color: isBold ? Colors.blue : null,
-                          ),
-                        ],
-                      ),
-                    ),
-                    TextFormField(
-                      controller: _textEditingController,
-                      maxLines: null,
-                      keyboardType: TextInputType.multiline,
-                      style: textStyle,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Digite seu texto aqui...',
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          text = value;
-                        });
-                      },
-                    ),
-                  ],
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(10.0),
+                child: TextFormField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Digite seu texto aqui...',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      text = value;
+                    });
+                  },
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  // Lógica para enviar participação
-                },
+                onPressed: _sendTextParticipation,
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
-                  onPrimary: Colors.white,
-                  minimumSize: Size(200, 50),
+                  foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                  minimumSize: const Size(200, 50),
                 ),
-                child: Text('Enviar Participação'),
+                child: const Text('Enviar Participação'),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _sendTextParticipation() async {
+    if (_selectedClasse != null &&
+        _selectedIgreja != null &&
+        text.isNotEmpty &&
+        nome.isNotEmpty &&
+        cpf.isNotEmpty) {
+      try {
+        await GoogleSheetsApi.part_texto(
+          nome,
+          cpf,
+          _selectedClasse!,
+          _selectedIgreja!,
+          text,
+        );
+        print('Participação em texto enviada com sucesso.');
+      } catch (e) {
+        print('Erro ao enviar a participação em texto: $e');
+      }
+    } else {
+      print('Por favor, preencha todos os campos.');
+    }
   }
 }

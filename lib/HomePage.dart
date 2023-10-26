@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: _pages[
-          _selectedIndex], // Mostra a página correspondente à opção selecionada
+      _selectedIndex], // Mostra a página correspondente à opção selecionada
       backgroundColor: Colors.white, // Cor de fundo do corpo do Scaffold
       bottomNavigationBar: Container(
         height: 50, // Altura da BottomNavigationBar reduzida para 50
@@ -60,28 +60,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBottomNavigationBarItem(int iconCode, String text, int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isSelected = List.generate(3, (i) => i == index);
-          _selectedIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(IconData(iconCode, fontFamily: 'MaterialIcons'),
-              color: Colors.white, size: 30),
-          AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeIn,
-            height: _isSelected[index] ? 20 : 0,
-            child: Text(
-              text,
-              style: TextStyle(color: Colors.white, fontSize: 12),
-            ),
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _isSelected = List.generate(3, (i) => i == index);
+            _selectedIndex = index;
+          });
+        },
+        child: Padding(
+          padding: EdgeInsets.only(left: 16, right: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(IconData(iconCode, fontFamily: 'MaterialIcons'),
+                  color: Colors.white, size: 30),
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeIn,
+                height: _isSelected[index] ? 20 : 0,
+                child: Text(
+                  text,
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

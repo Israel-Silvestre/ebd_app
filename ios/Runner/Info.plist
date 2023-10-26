@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Este aplicativo percisa de permissão para usar seu armazenamento de videos e fotos</string>
 </dict>
 </plist>
