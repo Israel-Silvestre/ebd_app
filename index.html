@@ -6,6 +6,7 @@
 <body>
     <h1>Visualizador de Imagens do Google Drive</h1>
     <div id="imagens"></div>
+    <div id="erro"></div>
 
     <script src="https://apis.google.com/js/api.js"></script>
     <script>
@@ -25,16 +26,24 @@
             }).then(function (response) {
                 var imagensDiv = document.getElementById('imagens');
                 var files = response.result.files;
-                for (var i = 0; i < files.length; i++) {
-                    if (files[i].thumbnailLink) {
-                        var img = document.createElement('img');
-                        img.src = files[i].thumbnailLink;
-                        var link = document.createElement('a');
-                        link.href = files[i].webViewLink;
-                        link.appendChild(img);
-                        imagensDiv.appendChild(link);
+                if (files && files.length > 0) {
+                    for (var i = 0; i < files.length; i++) {
+                        if (files[i].thumbnailLink) {
+                            var img = document.createElement('img');
+                            img.src = files[i].thumbnailLink;
+                            var link = document.createElement('a');
+                            link.href = files[i].webViewLink;
+                            link.appendChild(img);
+                            imagensDiv.appendChild(link);
+                        }
                     }
+                } else {
+                    var erroDiv = document.getElementById('erro');
+                    erroDiv.innerHTML = "Nenhuma imagem encontrada na pasta do Google Drive.";
                 }
+            }, function(reason) {
+                var erroDiv = document.getElementById('erro');
+                erroDiv.innerHTML = "Erro ao carregar imagens: " + reason.result.error.message;
             });
         }
 
