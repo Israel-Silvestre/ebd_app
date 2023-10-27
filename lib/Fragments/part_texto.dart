@@ -15,6 +15,10 @@ class _TextoState extends State<Texto> {
     'Crianças',
     'Intermediarios',
     'Adolescentes',
+    'Obreiros',
+    'Diáconos',
+    'Ungidos',
+    'Pastores',
   ];
 
   final List<String> igrejas = [
