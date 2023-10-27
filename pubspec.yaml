@@ -42,6 +42,10 @@ dependencies:
   googleapis: ^11.4.0
   googleapis_auth: ^1.4.1
   gsheets: ^0.5.0
+  http: ^1.1.0
+  cached_network_image: ^3.3.0
+  path_provider: ^2.1.1
+  animated_check: ^1.0.5
 
 dev_dependencies:
   flutter_test:

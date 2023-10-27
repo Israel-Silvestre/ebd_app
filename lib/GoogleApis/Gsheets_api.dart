@@ -1,7 +1,7 @@
 import 'package:googleapis/sheets/v4.dart' as sheets;
 import 'package:googleapis_auth/auth_io.dart';
+import '../Fragments/perguntas.dart';
 import 'Gdrive_api.dart';
-
 class GoogleSheetsApi {
   static const _credentials = r'''
     {
@@ -21,6 +21,7 @@ class GoogleSheetsApi {
   static const _spreadsheetId = '1OGbMT5d0PHVX4SSXJwMHEaLuJyXtfammakCHtKVb5EI';
   static const _textSheetName = 'Participações em Texto';
   static const _videoSheetName = 'Participações em Video';
+  static const _perguntasSheetName = 'Perguntas';
 
   static Future<void> part_texto(
       String nome, String cpf, String classe, String igreja, String fileName) async {
@@ -92,6 +93,44 @@ class GoogleSheetsApi {
       return 1;
     } else {
       return values.length;
+    }
+  }
+
+  static Future<List<Pergunta>> obterPerguntas() async {
+    final credentials = ServiceAccountCredentials.fromJson(_credentials);
+    final client = await clientViaServiceAccount(credentials, [sheets.SheetsApi.spreadsheetsScope]);
+    final sheetsApi = sheets.SheetsApi(client);
+
+    try {
+      var response = await sheetsApi.spreadsheets.values.get(
+        _spreadsheetId,
+        _perguntasSheetName,
+      );
+
+      var perguntas = <Pergunta>[];
+      if (response.values != null) {
+        for (var i = 1; i < response.values!.length; i++) {
+          var row = response.values![i];
+          if (row.length >= 3) {
+            var numero = row[0] as String;
+            var imageUrl = 'https://drive.google.com/uc?export=view&id=${row[1]}'; // Concatenação do link de imagem
+            var texto = row[2] as String;
+
+            var pergunta = Pergunta(
+              numero: numero,
+              imagePath: imageUrl,
+              texto: texto,
+            );
+            perguntas.add(pergunta);
+          }
+        }
+      }
+      return perguntas;
+    } catch (e) {
+      print('Erro ao obter perguntas da planilha: $e');
+      return [];
+    } finally {
+      client.close();
     }
   }
 
