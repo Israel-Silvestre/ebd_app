@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visualizador de Imagens do Google Drive</title>
+</head>
+<body>
+    <h1>Visualizador de Imagens do Google Drive</h1>
+    <div id="imagens"></div>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        function carregarImagens() {
+            gapi.client.init({
+                'apiKey': '470753843370e56ae84ee1e87b76f288d41a55cc'
+            }).then(function () {
+                return gapi.client.request({
+                    'path': 'https://www.googleapis.com/drive/v3/files',
+                    'params': {
+                        'q': "'1On77Djng115eR1W1OLGFC-atflBpIat7' in parents",
+                        'fields': "files(name, webViewLink, thumbnailLink)",
+                        'pageSize': 10,
+                        'orderBy': "createdTime"
+                    }
+                });
+            }).then(function (response) {
+                var imagensDiv = document.getElementById('imagens');
+                var files = response.result.files;
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].thumbnailLink) {
+                        var img = document.createElement('img');
+                        img.src = files[i].thumbnailLink;
+                        var link = document.createElement('a');
+                        link.href = files[i].webViewLink;
+                        link.appendChild(img);
+                        imagensDiv.appendChild(link);
+                    }
+                }
+            });
+        }
+
+        gapi.load('client', carregarImagens);
+    </script>
+</body>
+</html>
