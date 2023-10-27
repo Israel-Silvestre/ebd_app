@@ -12,7 +12,8 @@
         async function carregarImagens() {
             try {
                 const pastaID = "1On77Djng115eR1W1OLGFC-atflBpIat7";
-                const response = await fetch(`https://www.googleapis.com/drive/v3/files?q='${pastaID}'+in+parents&key=YOUR_API_KEY`);
+                const apiKey = "AIzaSyCEv47zeY0gOnO1Q8DqgywhfcUoCkp-kWU";
+                const response = await fetch(`https://www.googleapis.com/drive/v3/files?q='${pastaID}'+in+parents&key=${apiKey}`);
                 const data = await response.json();
                 const imagensDiv = document.getElementById('imagens');
 
