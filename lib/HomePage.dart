@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Perguntas',
           style: TextStyle(
             fontFamily: 'Roboto',
@@ -37,14 +37,14 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: _pages[
       _selectedIndex], // Mostra a página correspondente à opção selecionada
       backgroundColor: Colors.white, // Cor de fundo do corpo do Scaffold
       bottomNavigationBar: Container(
         height: 50, // Altura da BottomNavigationBar reduzida para 50
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.blue, // Cor de fundo da BottomNavigationBar
         ),
         child: Row(
@@ -69,19 +69,19 @@ class _HomePageState extends State<HomePage> {
           });
         },
         child: Padding(
-          padding: EdgeInsets.only(left: 16, right: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(IconData(iconCode, fontFamily: 'MaterialIcons'),
                   color: Colors.white, size: 30),
               AnimatedContainer(
-                duration: Duration(milliseconds: 300),
+                duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
                 height: _isSelected[index] ? 20 : 0,
                 child: Text(
                   text,
-                  style: TextStyle(color: Colors.white, fontSize: 12),
+                  style: const TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
             ],
