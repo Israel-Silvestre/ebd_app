@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:ebd_app/Components/check.dart';
 import 'package:flutter/material.dart';
+import '../Components/check.dart';
 import '../GoogleApis/Gsheets_api.dart';
-
+import '../Components/error.dart';
 class Texto extends StatefulWidget {
   @override
   _TextoState createState() => _TextoState();
@@ -15,8 +15,11 @@ class _TextoState extends State<Texto> {
     'Crianças',
     'Intermediarios',
     'Adolescentes',
+    'Obreiros',
+    'Diáconos',
+    'Ungidos',
+    'Pastores',
   ];
-
   final List<String> igrejas = [
     'Santarém',
     'Cidade das Rosas',
@@ -233,29 +236,54 @@ class _TextoState extends State<Texto> {
         nome.isNotEmpty &&
         cpf.isNotEmpty) {
       try {
-        await GoogleSheetsApi.part_texto(
+        String result = await GoogleSheetsApi.part_texto(
           nome,
           cpf,
           _selectedClasse!,
           _selectedIgreja!,
           text,
         );
-        print('Participação em texto enviada com sucesso.');
+        print('Resultado da participação em texto: $result');
 
-        setState(() {
-          _isShowingOverlay = true;
-        });
-
-        Timer(Duration(seconds: 5), () {
+        if (result == 'Participação enviada com sucesso!') {
           setState(() {
-            _isShowingOverlay = false;
+            _isShowingOverlay = true;
           });
-        });
+
+          Timer(Duration(seconds: 5), () {
+            setState(() {
+              _isShowingOverlay = false;
+            });
+          });
+        } else {
+          _showErrorOverlay(result);
+        }
       } catch (e) {
         print('Erro ao enviar a participação em texto: $e');
+        _showErrorOverlay('Erro ao enviar a participação.');
       }
     } else {
       print('Por favor, preencha todos os campos.');
     }
+  }
+
+  void _showErrorOverlay(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Erro'),
+          content: Error(errorText: errorMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

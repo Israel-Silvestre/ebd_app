@@ -23,40 +23,77 @@ class GoogleSheetsApi {
   static const _videoSheetName = 'Participações em Video';
   static const _perguntasSheetName = 'Perguntas';
 
-  static Future<void> part_texto(
-      String nome, String cpf, String classe, String igreja, String fileName) async {
+  static Future<String> verificarEstadoDoFormulario() async {
     final credentials = ServiceAccountCredentials.fromJson(_credentials);
     final client = await clientViaServiceAccount(credentials, [sheets.SheetsApi.spreadsheetsScope]);
-    final sheets.SheetsApi sheetsApi = sheets.SheetsApi(client);
-
+    final sheetsApi = sheets.SheetsApi(client);
     try {
-      var values = [
-        [nome, cpf, classe, igreja, fileName, DateTime.now().toIso8601String()]
-      ];
+      var range = 'Estado do Formulário!A1';
+      var response = await sheetsApi.spreadsheets.values.get(_spreadsheetId, range);
+      var cellValue = response.values![0][0];
 
-      var valueRange = sheets.ValueRange(values: values);
-      await sheetsApi.spreadsheets.values.append(
-        valueRange,
-        _spreadsheetId,
-        _textSheetName,
-        valueInputOption: 'USER_ENTERED',
-      );
+      if (cellValue == 'ABERTO') {
+        return "ABERTO";
+      } else {
+        return "O tempo para envio das respostas essa semana expirou!";
+      }
     } catch (e) {
-      print('Erro ao escrever na planilha: $e');
+      print('Erro ao ler a planilha: $e');
+      return "Erro ao verificar o estado do formulário.";
     } finally {
       client.close();
     }
   }
 
-  static Future<void> part_video(String nome, String cpf, String classe, String igreja, String fileName, String videoFile) async {
+  static Future<String> part_texto(String nome, String cpf, String classe, String igreja, String fileName) async {
+    var estadoFormulario = await verificarEstadoDoFormulario();
+
+    if (estadoFormulario == "ABERTO") {
+      final credentials = ServiceAccountCredentials.fromJson(_credentials);
+      final client = await clientViaServiceAccount(credentials, [sheets.SheetsApi.spreadsheetsScope]);
+      final sheetsApi = sheets.SheetsApi(client);
+
+      try {
+        var values = [
+          [nome, cpf, classe, igreja, fileName, DateTime.now().toIso8601String()]
+        ];
+
+        var valueRange = sheets.ValueRange(values: values);
+        await sheetsApi.spreadsheets.values.append(
+          valueRange,
+          _spreadsheetId,
+          _textSheetName,
+          valueInputOption: 'USER_ENTERED',
+        );
+        return "Participação enviada com sucesso!";
+      } catch (e) {
+        print('Erro ao escrever na planilha: $e');
+        return "Erro ao escrever na planilha.";
+      } finally {
+        client.close();
+      }
+    } else {
+      return estadoFormulario;
+    }
+  }
+
+  static Future<String> part_video(String nome, String cpf, String classe, String igreja, String fileName, String videoFile) async {
     final credentials = ServiceAccountCredentials.fromJson(_credentials);
     final client = await clientViaServiceAccount(credentials, [sheets.SheetsApi.spreadsheetsScope]);
     final sheets.SheetsApi sheetsApi = sheets.SheetsApi(client);
 
     try {
+      var stateRange = _videoSheetName + "!A1";
+      var stateValues = await sheetsApi.spreadsheets.values.get(_spreadsheetId, stateRange);
+      var state = stateValues.values?[0][0];
+
+      if (state != "ABERTO") {
+        return "O tempo para envio das respostas essa semana expirou!";
+      }
+
       var driveLink = await GoogleDriveApi.uploadVideoAndGetLink(videoFile);
       var videoLinkValues = [
-      [driveLink]
+        [driveLink]
       ];
 
       var values = [
@@ -79,12 +116,16 @@ class GoogleSheetsApi {
         updateRange,
         valueInputOption: 'USER_ENTERED',
       );
+
+      return "Participação enviada com sucesso!";
     } catch (e) {
       print('Erro ao escrever na planilha: $e');
+      return "Erro ao enviar a participação em vídeo: $e";
     } finally {
       client.close();
     }
   }
+
 
   static Future<int> getLastRow(sheets.SheetsApi sheetsApi, String spreadsheetId, String sheetName) async {
     var response = await sheetsApi.spreadsheets.values.get(spreadsheetId, sheetName);

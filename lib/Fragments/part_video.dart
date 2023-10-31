@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:ebd_app/Components/check.dart';
+import 'package:ebd_app/Components/error.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../GoogleApis/Gsheets_api.dart';
@@ -17,6 +18,10 @@ class _VideoState extends State<Video> {
     'Crianças',
     'Intermediarios',
     'Adolescentes',
+    'Obreiros',
+    'Diáconos',
+    'Ungidos',
+    'Pastores',
   ];
 
   final List<String> igrejas = [
@@ -251,23 +256,48 @@ class _VideoState extends State<Video> {
   void _sendVideoParticipation() async {
     if (_isVideoAttached && _attachedVideo != null) {
       try {
-        GoogleSheetsApi.part_video(nome!, cpf!, _selectedClasse!, _selectedIgreja!, videoFileName!, _attachedVideo!.path);
-        print('Participação em vídeo enviada com sucesso.');
+        String result = await GoogleSheetsApi.part_video(nome!, cpf!, _selectedClasse!, _selectedIgreja!, videoFileName!, _attachedVideo!.path);
+        print('Resultado da participação em vídeo: $result');
 
-        setState(() {
-          _isShowingOverlay = true;
-        });
-
-        Timer(Duration(seconds: 5), () {
+        if (result == 'Participação enviada com sucesso!') {
           setState(() {
-            _isShowingOverlay = false;
+            _isShowingOverlay = true;
           });
-        });
+
+          Timer(Duration(seconds: 5), () {
+            setState(() {
+              _isShowingOverlay = false;
+            });
+          });
+        } else {
+          _showErrorOverlay(result);
+        }
       } catch (e) {
         print('Erro ao enviar a participação em vídeo: $e');
+        _showErrorOverlay('Erro ao enviar a participação.');
       }
     } else {
       // Lidar com o cenário em que nenhum vídeo está anexado, se necessário
     }
+  }
+
+  void _showErrorOverlay(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Erro'),
+          content: Error(errorText: errorMessage),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
