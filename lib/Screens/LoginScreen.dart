@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ebd_app/HomePage.dart'; // Importe o arquivo da HomePage aqui
+import 'package:ebd_app/Screens/HomePage.dart'; // Importe o arquivo da HomePage aqui
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
