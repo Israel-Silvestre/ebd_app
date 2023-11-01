@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../Components/check.dart';
 import '../GoogleApis/Gsheets_api.dart';
 import '../Components/error.dart';
+import '../Fragments/perguntas.dart';
 
 class Video extends StatefulWidget {
   @override
@@ -54,11 +55,7 @@ class _VideoState extends State<Video> {
     "Lagoa D'anta",
   ];
 
-  final List<String> perguntas = [
-    'Pergunta 1',
-    'Pergunta 2',
-    'Pergunta 3',
-  ];
+  late List<Pergunta> perguntas = [];
 
   String? _selectedClasse;
   String? _selectedIgreja;
@@ -72,6 +69,25 @@ class _VideoState extends State<Video> {
   double buttonWidth = 150;
   double buttonHeight = 40;
 
+  @override
+  void initState() {
+    super.initState();
+    _getPerguntas();
+  }
+
+  void _getPerguntas() async {
+    try {
+      List<Pergunta>? fetchedPerguntas = await GoogleSheetsApi.obterPerguntas();
+      if (fetchedPerguntas != null) {
+        setState(() {
+          perguntas = fetchedPerguntas;
+        });
+      }
+    } catch (e) {
+      print('Erro ao obter perguntas: $e');
+    }
+  }
+
   Future<void> _pickVideoFromGallery() async {
     try {
       final pickedFile = await ImagePicker().pickVideo(
@@ -82,7 +98,7 @@ class _VideoState extends State<Video> {
         setState(() {
           _isVideoAttached = true;
           _attachedVideo = File(pickedFile.path);
-          videoFileName = _attachedVideo!.path.split('/').last; // Obtém apenas o nome do arquivo
+          videoFileName = _attachedVideo!.path.split('/').last;
         });
       }
     } catch (e) {
@@ -106,7 +122,7 @@ class _VideoState extends State<Video> {
         print('Resultado da participação em vídeo: $result');
 
         if (result == 'Participação enviada com sucesso!') {
-          _showCheckOverlay(result); // Adicionando a chamada direta ao método _showCheckOverlay
+          _showCheckOverlay(result);
         } else {
           _showErrorOverlay(result);
         }
@@ -208,10 +224,10 @@ class _VideoState extends State<Video> {
                 DropdownButtonFormField<String>(
                   value: _selectedPergunta,
                   hint: const Text('Pergunta'),
-                  items: perguntas.map((String value) {
+                  items: perguntas.map((perg) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: perg.numero,
+                      child: Text(perg.numero),
                     );
                   }).toList(),
                   onChanged: (newValue) {
@@ -234,7 +250,7 @@ class _VideoState extends State<Video> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                videoFileName ?? '', // Nome do vídeo anexado
+                                videoFileName ?? '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -271,7 +287,7 @@ class _VideoState extends State<Video> {
                               children: [
                                 SizedBox(width: 10),
                                 Text('Anexar Vídeo '),
-                                Icon(Icons.attach_file), // Alterei para o ícone padrão do Flutter
+                                Icon(Icons.attach_file),
                               ],
                             ),
                           ),

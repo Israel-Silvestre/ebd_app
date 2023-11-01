@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../Components/check.dart';
 import '../GoogleApis/Gsheets_api.dart';
 import '../Components/error.dart';
+import '../Fragments/perguntas.dart';
 
 class Texto extends StatefulWidget {
   @override
@@ -50,12 +51,6 @@ class _TextoState extends State<Texto> {
     "Lagoa D'anta",
   ];
 
-  final List<String> perguntas = [
-    'Pergunta 1',
-    'Pergunta 2',
-    'Pergunta 3',
-  ];
-
   String? _selectedClasse;
   String? _selectedIgreja;
   String? _selectedPergunta;
@@ -65,6 +60,26 @@ class _TextoState extends State<Texto> {
   bool isItalic = false;
   bool isUnderlined = false;
   bool isBold = false;
+
+  late List<Pergunta> perguntas = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarPerguntas();
+  }
+
+  Future<void> _carregarPerguntas() async {
+    try {
+      List<Pergunta> perguntasCarregadas = await GoogleSheetsApi.obterPerguntas();
+      setState(() {
+        perguntas = perguntasCarregadas;
+      });
+    } catch (e) {
+      print('Erro ao carregar perguntas: $e');
+      // Lidar com o erro ao carregar as perguntas, se necessário
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -135,10 +150,10 @@ class _TextoState extends State<Texto> {
               DropdownButtonFormField<String>(
                 value: _selectedPergunta,
                 hint: const Text('Pergunta'),
-                items: perguntas.map((String value) {
+                items: perguntas.map((pergunta) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: pergunta.numero,
+                    child: Text(pergunta.numero),
                   );
                 }).toList(),
                 onChanged: (newValue) {
