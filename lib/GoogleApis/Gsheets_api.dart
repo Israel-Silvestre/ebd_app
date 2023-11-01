@@ -2,6 +2,7 @@ import 'package:googleapis/sheets/v4.dart' as sheets;
 import 'package:googleapis_auth/auth_io.dart';
 import '../Fragments/perguntas.dart';
 import 'Gdrive_api.dart';
+
 class GoogleSheetsApi {
   static const _credentials = r'''
     {
@@ -18,6 +19,7 @@ class GoogleSheetsApi {
       "universe_domain": "googleapis.com"
     }
   ''';
+
   static const _spreadsheetId = '1OGbMT5d0PHVX4SSXJwMHEaLuJyXtfammakCHtKVb5EI';
   static const _textSheetName = 'Participações em Texto';
   static const _videoSheetName = 'Participações em Video';
@@ -45,7 +47,7 @@ class GoogleSheetsApi {
     }
   }
 
-  static Future<String> part_texto(String nome, String cpf, String classe, String igreja, String fileName) async {
+  static Future<String> part_texto(String nome, String cpf, String classe, String igreja, String pergunta, String fileName) async {
     var estadoFormulario = await verificarEstadoDoFormulario();
 
     if (estadoFormulario == "ABERTO") {
@@ -55,7 +57,7 @@ class GoogleSheetsApi {
 
       try {
         var values = [
-          [nome, cpf, classe, igreja, fileName, DateTime.now().toIso8601String()]
+          [nome, cpf, classe, igreja, pergunta, fileName, DateTime.now().toIso8601String()]
         ];
 
         var valueRange = sheets.ValueRange(values: values);
@@ -77,13 +79,13 @@ class GoogleSheetsApi {
     }
   }
 
-  static Future<String> part_video(String nome, String cpf, String classe, String igreja, String fileName, String videoFile) async {
+  static Future<String> part_video(String nome, String cpf, String classe, String igreja, String pergunta, String fileName, String videoFile) async {
     final credentials = ServiceAccountCredentials.fromJson(_credentials);
     final client = await clientViaServiceAccount(credentials, [sheets.SheetsApi.spreadsheetsScope]);
     final sheets.SheetsApi sheetsApi = sheets.SheetsApi(client);
 
     try {
-      var stateRange = _videoSheetName + "!A1";
+      var stateRange = "Estado do Formulário" + "!A1"; // Ajuste feito aqui
       var stateValues = await sheetsApi.spreadsheets.values.get(_spreadsheetId, stateRange);
       var state = stateValues.values?[0][0];
 
@@ -97,7 +99,7 @@ class GoogleSheetsApi {
       ];
 
       var values = [
-        [nome, cpf, classe, igreja, fileName, DateTime.now().toIso8601String()]
+        [nome, cpf, classe, igreja, pergunta, fileName, DateTime.now().toIso8601String()]
       ];
 
       var valueRange = sheets.ValueRange(values: values);
@@ -108,7 +110,7 @@ class GoogleSheetsApi {
         valueInputOption: 'USER_ENTERED',
       );
 
-      var updateRange = _videoSheetName + "!G" + (await getLastRow(sheetsApi, _spreadsheetId, _videoSheetName)).toString();
+      var updateRange = _videoSheetName + "!H" + (await getLastRow(sheetsApi, _spreadsheetId, _videoSheetName)).toString();
       var updateValueRange = sheets.ValueRange(values: videoLinkValues);
       await sheetsApi.spreadsheets.values.update(
         updateValueRange,
@@ -154,7 +156,7 @@ class GoogleSheetsApi {
           var row = response.values![i];
           if (row.length >= 3) {
             var numero = row[0] as String;
-            var imageUrl = 'https://drive.google.com/uc?export=view&id=${row[1]}'; // Concatenação do link de imagem
+            var imageUrl = 'https://drive.google.com/uc?export=view&id=${row[1]}';
             var texto = row[2] as String;
 
             var pergunta = Pergunta(
@@ -174,5 +176,4 @@ class GoogleSheetsApi {
       client.close();
     }
   }
-
 }

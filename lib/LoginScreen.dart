@@ -6,6 +6,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double buttonWidth = MediaQuery.of(context).size.width * 0.3;
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -14,50 +16,57 @@ class LoginScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            SizedBox(
-                height: MediaQuery.of(context).size.height *
-                    0.1), // Ajuste a altura conforme necessário
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, // Defina a largura do botão
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()), // Navega para a HomePage
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    Colors.blue, // Defina a cor azul para o botão
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0), // Ajuste o espaçamento superior conforme necessário
+          child: Stack(
+            children: [
+              Center(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.45,
+                  child: Transform.rotate(
+                    angle: -90 * 3.1415927 / 180,
+                    child: Image(
+                      image: AssetImage('assets/logo.png'), // Coloque o caminho da sua imagem de logo
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                  child: const Text('ENTRAR', style: TextStyle(color: Colors.white)),
                 ),
               ),
-            ),
-            const SizedBox(
-                height: 10.0), // Ajuste o espaçamento conforme necessário
-            Center(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3, // Defina a largura do botão
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Adicione aqui a função para o segundo botão
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    Colors.blue, // Defina a cor azul para o botão
+              Align(
+                alignment: Alignment(0, 0.6), // Ajuste a posição vertical dos botões aqui
+                child: SizedBox(
+                  width: buttonWidth,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()), // Navega para a HomePage
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Defina a cor azul para o botão
+                    ),
+                    child: const Text('ENTRAR', style: TextStyle(color: Colors.white)),
                   ),
-                  child: const Text('TUTORIAL', style: TextStyle(color: Colors.white)),
                 ),
               ),
-            ),
-            const SizedBox(
-                height: 70.0), // Ajuste o espaçamento conforme necessário
-          ],
+              Align(
+                alignment: Alignment(0, 0.8), // Ajuste a posição vertical dos botões aqui
+                child: SizedBox(
+                  width: buttonWidth,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Adicione aqui a função para o segundo botão
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue, // Defina a cor azul para o botão
+                    ),
+                    child: const Text('TUTORIAL', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

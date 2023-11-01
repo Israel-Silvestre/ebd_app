@@ -1,80 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:animated_check/animated_check.dart';
 
-void main() {
-  runApp(MyApp());
-}
+class AnimatedCheck extends StatefulWidget {
+  final String overlayText;
 
-class MyApp extends StatelessWidget {
+  const AnimatedCheck({required this.overlayText});
+
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Check(),
-    );
-  }
+  _AnimatedCheckState createState() => _AnimatedCheckState();
 }
 
-class Check extends StatefulWidget {
-  @override
-  _CheckState createState() => _CheckState();
-}
-
-class _CheckState extends State<Check> with SingleTickerProviderStateMixin {
-  AnimationController? _controller;
+class _AnimatedCheckState extends State<AnimatedCheck> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 1500),
+      duration: Duration(seconds: 1),
     );
-    _controller!.forward();
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    _controller.forward();
   }
 
   @override
   void dispose() {
-    _controller!.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.5),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedCheck(
-                progress: _controller!,
-                size: 100,
-                color: Colors.green,
-              ),
-              SizedBox(height: 20),
-              Text(
-                'Participação enviada com sucesso',
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.black,
+    return Container(
+      padding: const EdgeInsets.all(20),
+      color: Colors.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _animation.value,
+                child: Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 60,
                 ),
-              ),
-            ],
+              );
+            },
           ),
-        ),
+          const SizedBox(height: 10),
+          Text(
+            widget.overlayText,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }

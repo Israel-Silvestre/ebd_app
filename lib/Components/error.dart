@@ -8,6 +8,7 @@ class Error extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Center(
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 40),
