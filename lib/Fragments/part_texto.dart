@@ -5,6 +5,10 @@ import '../Components/error.dart';
 import '../Fragments/perguntas.dart';
 
 class Texto extends StatefulWidget {
+  final bool showAppBar;
+
+  Texto({required this.showAppBar});
+
   @override
   _TextoState createState() => _TextoState();
 }
@@ -90,6 +94,11 @@ class _TextoState extends State<Texto> {
     );
 
     return Scaffold(
+      appBar: widget.showAppBar
+          ? AppBar(
+        title: Text('Participação com Texto'),
+      )
+          : null,
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(16.0),
@@ -246,6 +255,8 @@ class _TextoState extends State<Texto> {
       ),
     );
   }
+
+  // ... (o restante do seu código)
 
   void _sendTextParticipation() async {
     if (_selectedClasse != null &&

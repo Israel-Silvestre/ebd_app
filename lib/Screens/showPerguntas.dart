@@ -1,12 +1,11 @@
 import 'dart:typed_data';
 import 'package:ebd_app/Fragments/part_texto.dart';
-
 import '../Fragments/part_video.dart';
 import '../Fragments/perguntas.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-// Sua classe Pergunta aqui...
+
 
 class showPerguntas extends StatelessWidget {
   final Pergunta pergunta;
@@ -83,7 +82,7 @@ class showPerguntas extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Texto(),
+                          builder: (context) => Texto(showAppBar: true),
                         ),
                       );
                     },
@@ -97,7 +96,7 @@ class showPerguntas extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Video(),
+                          builder: (context) => Video(showAppBar: true),
                         ),
                       );
                     },

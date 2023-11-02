@@ -8,6 +8,10 @@ import '../Components/error.dart';
 import '../Fragments/perguntas.dart';
 
 class Video extends StatefulWidget {
+  final bool showAppBar;
+
+  Video({required this.showAppBar});
+
   @override
   _VideoState createState() => _VideoState();
 }
@@ -164,6 +168,11 @@ class _VideoState extends State<Video> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: widget.showAppBar
+          ? AppBar(
+        title: Text('Participação com Video'),
+      )
+          : null,
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
