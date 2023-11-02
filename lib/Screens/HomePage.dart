@@ -11,10 +11,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Índice da opção selecionada na BottomNavigationBar
 
-  List<Widget> _pages = [
-    Perguntas(), // Seu fragmento de perguntas
-    Video(), // Página 2 - Adicione o conteúdo conforme necessário
-    Texto(), // Página 3 - Adicione o conteúdo conforme necessário
+  final List<Widget> _pages = [
+    Perguntas(), // Frqagmento para mostrar perguntas.
+    Video(showAppBar: false), // Fragmento de  participação em vídeo.
+    Texto(showAppBar: false), // Fragmento de  participação em texto.
   ];
 
   late List<bool> _isSelected;
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex], // Mostra a página correspondente à opção selecionada
       backgroundColor: Colors.white, // Cor de fundo do corpo do Scaffold
       bottomNavigationBar: Container(
-        height: 50, // Altura da BottomNavigationBar reduzida para 50
+        height: 65, // Altura da BottomNavigationBar reduzida para 50
         decoration: const BoxDecoration(
           color: Colors.blue, // Cor de fundo da BottomNavigationBar
         ),
@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(IconData(iconCode, fontFamily: 'MaterialIcons'),
-                  color: Colors.white, size: 30),
+                  color: Colors.white, size: 40),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeIn,
